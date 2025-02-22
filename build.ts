@@ -49,41 +49,53 @@ export async function buildApp(file: string) {
 
 		for (const component of components) {
 			if ($(component.name).length === 0) continue
+			const initialHTML = component.html 
+			
+			const elements = $(component.name)
+			for (let i = 0; i < elements.length; i++) {
+				const element = elements.eq(i)
+				let replacedHtml = initialHTML
 				
-			component.html = component.html.replaceAll("<slot></slot>", $(component.name).html()!)
-
-			// Get text between <style> tags in component.html & don't include the <style></style> in the final text
-			const styleTags = component.html.match(/<style[^>]*>[\s\S]*<\/style>/g)
-
-			const attributes = Object.entries($(component.name).attr()!)
-			attributes.forEach((attr) => {
-				// Replace {{ attributeName }} with the value of the attribute
-				component.html = component.html.replace(
-					`{{ ${attr[0]} }}`,
-					`<snelle-${attr[0]}>${attr[1]}</snelle-${attr[0]}>`
-				)
-				// Add attributes to first element in component.html
-				const firstElement = component.html.match(/<[^>]*>/)
-				if (firstElement) {
-					component.html = component.html.replace(
-						firstElement[0],
-						`${firstElement[0].replace(">", "")} ${attr[0]}="${attr[1]}">`
+				replacedHtml = replacedHtml.replaceAll("<slot></slot>", element.html()!)
+	
+				// Get text between <style> tags in component.html & don't include the <style></style> in the final text
+				const styleTags = replacedHtml.match(/<style[^>]*>[\s\S]*<\/style>/g)
+	
+				const attributes = Object.entries(element.attr()!)
+				attributes.forEach((attr) => {
+					// Replace {{ attributeName }} with the value of the attribute
+					replacedHtml = replacedHtml.replace(
+						`{{ ${attr[0]} }}`,
+						`<snelle-${attr[0]}>${attr[1]}</snelle-${attr[0]}>`
 					)
-				}
-			})
-
-			styles.add(
-				styleTags
-					?.toString()
-					.replace(/<style[^>]*>/g, "")
-					.replace(/<\/style>/g, "")
-			)
-
-			component.html = component.html.replace(/<style[^>]*>[\s\S]*<\/style>/g, "")
-
-			// Replace the styles in component.html with styles
-
-			$(component.name).replaceWith(component.html)
+					// Add attributes to first element in component.html
+					const firstElement = replacedHtml.match(/<[^>]*>/)
+					if (firstElement) {
+						replacedHtml = replacedHtml.replace(
+							firstElement[0],
+							`${firstElement[0].replace(">", "")} ${attr[0]}="${attr[1]}">`
+						)
+					}
+				})
+	
+				styles.add(
+					styleTags
+						?.toString()
+						.replace(/<style[^>]*>/g, "")
+						.replace(/<\/style>/g, "")
+				)
+	
+				replacedHtml = replacedHtml.replace(/<style[^>]*>[\s\S]*<\/style>/g, "")
+				replacedHtml = replacedHtml.replace(/{{[^}]*}}/g, (match) => {
+					const attr = match.replace(/{{|}}/g, "").trim()
+					return `<snelle-${attr}></snelle-${attr}>`
+				})
+	
+				// Replace the styles in component.html with styles
+	
+				element.replaceWith(replacedHtml)
+				
+			}
 
 			
 		}
@@ -136,4 +148,11 @@ export async function buildApp(file: string) {
 	}
 }
 
-buildApp("src/index.html")
+// Build all files in src directory
+export async function buildAll() {
+	const files = readdirSync("src")
+
+	await Promise.all(files.map((file) => buildApp(`src/${file}`)))
+}
+
+buildAll()
