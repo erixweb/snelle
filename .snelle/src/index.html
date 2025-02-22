@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<style>
+        button {
+            background-color: blue;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    
+
+    li {
+        list-style-type: none;
+        padding: 10px;
+        margin: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    
+
+</style></head>
+<body>
+    <ol>
+    
+        <li>
+    
+            <p>Task 1</p>
+        
+</li>
+
+
+    
+</ol>
+
+    <h1>
+        <snelle-count></snelle-count>
+    </h1>
+    <button onclick="count.value += 1">
+    +
+    
+</button>
+    <button onclick="count.value += 1">
+    +
+    
+</button>
+    <script>function create(element) { 
+    let val 
+    const reactiveElement = document.querySelector("snelle-"+element)
+	let initialState
+	if (reactiveElement.childNodes[0] === undefined) {
+		initialState = ""
+	} else {
+		initialState = reactiveElement.childNodes[0].data
+	}
+
+	if (!isNaN(initialState)) {
+		initialState = Number(initialState)
+	}
+
+    if (reactiveElement) {
+    return val = {
+        state: initialState,
+        effect: function(val) {},
+        get value () {
+            return this.state
+        },
+        set value (value) {
+            this.state = value
+            this.effect(value)
+            reactiveElement.innerText = value
+        },
+        subscribe: function(fn) {
+            this.effect = fn
+        },
+    }
+}
+}
+            const count = create("count")
+            count.value = 0
+    </script>
+
+</body></html>

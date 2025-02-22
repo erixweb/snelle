@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <task-list>
+        <task-item>
+            <p>Task 1</p>
+        </task-item>
+    </task-list>
+
+    <h1>
+        {{ count }}
+    </h1>
+    <erik-button onclick="count.value += 1">+</erik-button>
+    <erik-button onclick="count.value -= 1">-</erik-button>
+    <script>
+            const count = create("count")
+            count.value = 0
+    </script>
+</body>
+</html>
