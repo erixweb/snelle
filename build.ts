@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { readFileSync, readdirSync, promises as fsPromises } from "fs"
 import * as path from "path"
 import * as cheerio from "cheerio"
@@ -150,9 +151,16 @@ export async function buildApp(file: string) {
 
 // Build all files in src directory
 export async function buildAll() {
-	const files = readdirSync("src")
+	const files = readdirSync("src")	
 
 	await Promise.all(files.map((file) => buildApp(`src/${file}`)))
 }
+export async function buildAssets() {
+	const files = readdirSync("public")
+	const outputDir = ".snelle/public"
+	await mkdir(outputDir, { recursive: true })
+	await Promise.all(files.map((file) => writeFile(`${outputDir}/${file}`, readFileSync(`public/${file}`), "utf8")))
+}
 
 buildAll()
+buildAssets()

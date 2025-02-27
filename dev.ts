@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { serve } from "bun"
 import { readFileSync } from "fs"
 import { buildApp } from "./build"

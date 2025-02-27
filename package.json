@@ -1,10 +1,14 @@
 {
   "name": "snelle",
-  "module": "index.ts",
+  "module": "build.ts",
   "type": "module",
   "scripts": {
     "dev": "bun run dev.ts",
     "build": "bun run build.ts"
+  },
+  "bin": {
+    "snelle dev": "./dev.ts",
+    "snelle build": "./build.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"
