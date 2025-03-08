@@ -50,18 +50,18 @@ export async function buildApp(file: string) {
 
 		for (const component of components) {
 			if ($(component.name).length === 0) continue
-			const initialHTML = component.html 
-			
+			const initialHTML = component.html
+
 			const elements = $(component.name)
 			for (let i = 0; i < elements.length; i++) {
 				const element = elements.eq(i)
 				let replacedHtml = initialHTML
-				
+
 				replacedHtml = replacedHtml.replaceAll("<slot></slot>", element.html()!)
-	
+
 				// Get text between <style> tags in component.html & don't include the <style></style> in the final text
 				const styleTags = replacedHtml.match(/<style[^>]*>[\s\S]*<\/style>/g)
-	
+
 				const attributes = Object.entries(element.attr()!)
 				attributes.forEach((attr) => {
 					// Replace {{ attributeName }} with the value of the attribute
@@ -78,27 +78,24 @@ export async function buildApp(file: string) {
 						)
 					}
 				})
-	
+
 				styles.add(
 					styleTags
 						?.toString()
 						.replace(/<style[^>]*>/g, "")
 						.replace(/<\/style>/g, "")
 				)
-	
+
 				replacedHtml = replacedHtml.replace(/<style[^>]*>[\s\S]*<\/style>/g, "")
 				replacedHtml = replacedHtml.replace(/{{[^}]*}}/g, (match) => {
 					const attr = match.replace(/{{|}}/g, "").trim()
 					return `<snelle-${attr}></snelle-${attr}>`
 				})
-	
-				// Replace the styles in component.html with styles
-	
-				element.replaceWith(replacedHtml)
-				
-			}
 
-			
+				// Replace the styles in component.html with styles
+
+				element.replaceWith(replacedHtml)
+			}
 		}
 		$("script").html(
 			`function create(element) { 
@@ -151,7 +148,7 @@ export async function buildApp(file: string) {
 
 // Build all files in src directory
 export async function buildAll() {
-	const files = readdirSync("src")	
+	const files = readdirSync("src")
 
 	await Promise.all(files.map((file) => buildApp(`src/${file}`)))
 }
@@ -159,7 +156,11 @@ export async function buildAssets() {
 	const files = readdirSync("public")
 	const outputDir = ".snelle/public"
 	await mkdir(outputDir, { recursive: true })
-	await Promise.all(files.map((file) => writeFile(`${outputDir}/${file}`, readFileSync(`public/${file}`), "utf8")))
+	await Promise.all(
+		files.map((file) =>
+			writeFile(`${outputDir}/${file}`, readFileSync(`public/${file}`), "utf8")
+		)
+	)
 }
 
 buildAll()

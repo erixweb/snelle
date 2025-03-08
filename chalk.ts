@@ -1,5 +1,4 @@
 export function chalk(string: string) {
-    /** @type {import("Frog").ConsoleColors} */
     const colors: any = {
         "!0": "\x1b[30m", // black
         "!1": "\x1b[34m", // dark blue
