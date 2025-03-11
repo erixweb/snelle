@@ -1,5 +1,5 @@
-export function chalk(string: string) {
-    const colors: any = {
+export function chalk(string) {
+    const colors = {
         "!0": "\x1b[30m", // black
         "!1": "\x1b[34m", // dark blue
         "!2": "\x1b[32m", // dark green

@@ -23,13 +23,13 @@ async function resolveComponents() {
 	return resolvedComponents
 }
 
-async function resolveComponent(componentPath: string) {
+async function resolveComponent(componentPath) {
 	const html = await readFile(`components/${componentPath}`, "utf8")
 	return html
 }
 
 // Read the HTML file
-export async function buildApp(file: string) {
+export async function buildApp(file) {
 	const time = Date.now()
 	console.log(chalk(`∙∙∙ !8Building !e${file}!8.`))
 	const htmlFilePath = `${file}`
@@ -57,12 +57,12 @@ export async function buildApp(file: string) {
 				const element = elements.eq(i)
 				let replacedHtml = initialHTML
 
-				replacedHtml = replacedHtml.replaceAll("<slot></slot>", element.html()!)
+				replacedHtml = replacedHtml.replaceAll("<slot></slot>", element.html())
 
 				// Get text between <style> tags in component.html & don't include the <style></style> in the final text
 				const styleTags = replacedHtml.match(/<style[^>]*>[\s\S]*<\/style>/g)
 
-				const attributes = Object.entries(element.attr()!)
+				const attributes = Object.entries(element.attr())
 				attributes.forEach((attr) => {
 					// Replace {{ attributeName }} with the value of the attribute
 					replacedHtml = replacedHtml.replace(

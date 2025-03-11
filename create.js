@@ -23,7 +23,7 @@ async function copyDirectories() {
         await fs.promises.mkdir(path.dirname(targetPath), { recursive: true });
         
         // Copy directory with all contents recursively
-        async function copyRecursive(src: string, dest: string) {
+        async function copyRecursive(src, dest) {
           const entries = await fs.promises.readdir(src, { withFileTypes: true });
           
           for (const entry of entries) {
@@ -42,7 +42,7 @@ async function copyDirectories() {
         await copyRecursive(sourcePath, targetPath);
         console.log(`Successfully copied ${dir}`);
       } catch (err) {
-        if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+        if (err.code === 'ENOENT') {
           console.warn(`Directory not found: ${dir}`);
         } else {
           throw err;

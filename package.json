@@ -1,30 +1,33 @@
 {
-  "name": "snelle",
-  "author": "erixweb",
-  "description": "A simple static site generator",
-  "version": "0.0.1",
-  "type": "module",
-  "scripts": {
-    "dev": "bun run dev.ts",
-    "build": "bun run build.ts",
-    "create": "bun run create.ts"
-  },
-  "bin": {
-    "snelle dev": "./dev.ts",
-    "snelle build": "./build.ts",
-    "snelle create": "./create.ts"
-  },
-  "files": [
-    "build.ts",
-    "dev.ts"
-  ],
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "cheerio": "^1.0.0"
-  }
+	"name": "snelle",
+	"author": "erixweb",
+	"description": "A simple static site generator",
+	"version": "0.0.3",
+	"type": "module",
+	"scripts": {
+		"dev": "bun run dev.js",
+		"build": "bun run build.js",
+		"create": "bun run create.js"
+	},
+	"bin": {
+		"snelle": "./cli.js"
+	},
+	"files": [
+		"components/*",
+		"cli.ts",
+		"dev.ts",
+		"build.ts",
+		"create.ts",
+    "src/*",
+    "public/*"
+	],
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"dependencies": {
+		"cheerio": "^1.0.0"
+	}
 }
