@@ -1,15 +1,23 @@
 {
   "name": "snelle",
-  "module": "build.ts",
+  "author": "erixweb",
+  "description": "A simple static site generator",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "bun run dev.ts",
-    "build": "bun run build.ts"
+    "build": "bun run build.ts",
+    "create": "bun run create.ts"
   },
   "bin": {
     "snelle dev": "./dev.ts",
-    "snelle build": "./build.ts"
+    "snelle build": "./build.ts",
+    "snelle create": "./create.ts"
   },
+  "files": [
+    "build.ts",
+    "dev.ts"
+  ],
   "devDependencies": {
     "@types/bun": "latest"
   },
