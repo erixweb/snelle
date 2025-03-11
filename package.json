@@ -2,7 +2,7 @@
 	"name": "snelle",
 	"author": "erixweb",
 	"description": "A simple static site generator",
-	"version": "0.0.3",
+	"version": "0.0.6",
 	"type": "module",
 	"scripts": {
 		"dev": "bun run dev.js",
@@ -14,10 +14,10 @@
 	},
 	"files": [
 		"components/*",
-		"cli.ts",
-		"dev.ts",
-		"build.ts",
-		"create.ts",
+		"cli.js",
+		"dev.js",
+		"build.js",
+		"create.js",
     "src/*",
     "public/*"
 	],

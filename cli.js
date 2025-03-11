@@ -35,8 +35,8 @@ Commands:
 switch (command) {
     case 'dev':
         try {
-            await import('./dev.ts');
-            // Add dev server implementation here
+            const devModule = await import('./dev.js');
+            await devModule.default();
         } catch (error) {
             console.error('Error:', error.message);
             process.exit(1);
@@ -44,8 +44,8 @@ switch (command) {
         break;
     case 'create':
         try {
-            await import('./create.ts');
-            // Add project creation implementation here
+            const createModule = await import('./create.js');
+            await createModule.default();
         } catch (error) {
             console.error('Error:', error.message);
             process.exit(1);
@@ -53,8 +53,8 @@ switch (command) {
         break;
     case 'build':
         try {
-            await import('./build.ts');
-            // Add build implementation here
+            const buildModule = await import('./build.js');
+            await buildModule.default();
         } catch (error) {
             console.error('Error:', error.message);
             process.exit(1);

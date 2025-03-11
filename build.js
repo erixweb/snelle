@@ -2,7 +2,7 @@
 import { readFileSync, readdirSync, promises as fsPromises } from "fs"
 import * as path from "path"
 import * as cheerio from "cheerio"
-import { chalk } from "./chalk"
+import { chalk } from "./chalk.js"
 
 const { readFile, mkdir, writeFile } = fsPromises
 
