@@ -2,63 +2,49 @@ import fs from 'fs';
 import path from 'path';
 
 export default function execute() {
-  copyDirectories()
+  createDirectoriesAndCopyFiles()
 }
 
-async function copyDirectories() {
+async function createDirectoriesAndCopyFiles() {
   const directories = ['src', 'public', 'components'];
-  // Get the path to the package directory in node_modules
-  const sourceRoot = path.join(__dirname);
-  const targetRoot = path.join(process.cwd(), 'new-project'); // You can modify the target directory name
+  const targetRoot = path.join(process.cwd(), 'new-project');
+  const templateRoot = path.join(process.cwd(), 'templates');
 
   try {
     // Create target directory if it doesn't exist
     await fs.promises.mkdir(targetRoot, { recursive: true });
 
-    // Copy each directory
+    // Create each directory and copy files
     for (const dir of directories) {
-      const sourcePath = path.join(sourceRoot, dir);
       const targetPath = path.join(targetRoot, dir);
-
+      const sourcePath = path.join(templateRoot, dir);
+      console.log(sourcePath)
+      
       try {
-        // Check if source directory exists
-        await fs.promises.access(sourcePath);
-        
-        // Ensure the target directory structure exists
-        await fs.promises.mkdir(path.dirname(targetPath), { recursive: true });
-        
-        // Copy directory with all contents recursively
-        async function copyRecursive(src, dest) {
-          const entries = await fs.promises.readdir(src, { withFileTypes: true });
-          
-          for (const entry of entries) {
-            const srcPath = path.join(src, entry.name);
-            const destPath = path.join(dest, entry.name);
-            
-            if (entry.isDirectory()) {
-              await fs.promises.mkdir(destPath, { recursive: true });
-              await copyRecursive(srcPath, destPath);
-            } else {
-              await fs.promises.copyFile(srcPath, destPath);
-            }
+        // Create directory
+        await fs.promises.mkdir(targetPath, { recursive: true });
+        console.log(`Successfully created ${dir} directory`);
+
+        // Copy files if source directory exists
+        if (await fs.promises.access(sourcePath).then(() => true).catch(() => false)) {
+          const files = await fs.promises.readdir(sourcePath);
+          for (const file of files) {
+            const sourceFile = path.join(sourcePath, file);
+            const targetFile = path.join(targetPath, file);
+            await fs.promises.copyFile(sourceFile, targetFile);
+            console.log(`Copied ${file} to ${dir} directory`);
           }
         }
-
-        await copyRecursive(sourcePath, targetPath);
-        console.log(`Successfully copied ${dir}`);
       } catch (err) {
-        if (err.code === 'ENOENT') {
-          console.warn(`Directory not found: ${dir}`);
-        } else {
-          throw err;
-        }
+        console.error(`Error processing directory ${dir}:`, err);
+        throw err;
       }
     }
 
-    console.log('All directories copied successfully!');
+    console.log('All directories created and files copied successfully!');
   } catch (error) {
-    console.error('Error copying directories:', error);
+    console.error('Error creating directories or copying files:', error);
   }
 }
 
-copyDirectories();
+createDirectoriesAndCopyFiles();

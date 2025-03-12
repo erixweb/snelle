@@ -2,7 +2,7 @@
 	"name": "snelle",
 	"author": "erixweb",
 	"description": "A simple static site generator",
-	"version": "0.0.9",
+	"version": "0.0.10",
 	"type": "module",
 	"scripts": {
 		"dev": "cli.js",
@@ -11,13 +11,11 @@
 	},
 	"bin": "cli.js",	
 	"files": [
-		"components/*",
+		"templates/*",
 		"cli.js",
 		"dev.js",
 		"build.js",
-		"create.js",
-		"src/*",
-		"public/*"
+		"create.js"
 	],
 	"devDependencies": {
 		"@types/bun": "latest"
