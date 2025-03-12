@@ -2,12 +2,11 @@
 	"name": "snelle",
 	"author": "erixweb",
 	"description": "A simple static site generator",
-	"version": "0.0.10",
+	"version": "0.0.12",
 	"type": "module",
 	"scripts": {
 		"dev": "cli.js",
-		"build": "bun run build.js",
-		"create": "bun run create.js"
+		"build": "bun run build.js"
 	},
 	"bin": "cli.js",	
 	"files": [
