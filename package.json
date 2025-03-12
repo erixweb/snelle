@@ -2,24 +2,22 @@
 	"name": "snelle",
 	"author": "erixweb",
 	"description": "A simple static site generator",
-	"version": "0.0.6",
+	"version": "0.0.8",
 	"type": "module",
 	"scripts": {
-		"dev": "bun run dev.js",
+		"dev": "cli.js",
 		"build": "bun run build.js",
 		"create": "bun run create.js"
 	},
-	"bin": {
-		"snelle": "./cli.js"
-	},
+	"bin": "cli.js",	
 	"files": [
 		"components/*",
 		"cli.js",
 		"dev.js",
 		"build.js",
 		"create.js",
-    "src/*",
-    "public/*"
+		"src/*",
+		"public/*"
 	],
 	"devDependencies": {
 		"@types/bun": "latest"
