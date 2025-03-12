@@ -1,9 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 
+export default function execute() {
+  copyDirectories()
+}
+
 async function copyDirectories() {
-  const directories = ['src', 'public', 'components/erik-button'];
-  const sourceRoot = process.cwd();
+  const directories = ['src', 'public', 'components'];
+  // Get the path to the package directory in node_modules
+  const sourceRoot = path.join(__dirname);
   const targetRoot = path.join(process.cwd(), 'new-project'); // You can modify the target directory name
 
   try {
