@@ -29,7 +29,7 @@ async function resolveComponent(componentPath) {
 }
 
 // Read the HTML file
-export default async function buildApp(file) {
+export async function buildApp(file) {
 	const time = Date.now()
 	console.log(chalk(`∙∙∙ !8Building !e${file}!8.`))
 	const htmlFilePath = `${file}`
