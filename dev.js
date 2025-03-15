@@ -38,6 +38,7 @@ const server = http.createServer(async (req, res) => {
 		// Trim slashes (/) at the end and start of the pathname
 		try {
 			const cleanPath = url.pathname.replace(/^\/+|\/+$/g, "")
+
 			if (fs.existsSync(`src/${cleanPath}.html`) === false) {
 				if (fs.existsSync(`public/${cleanPath}`) === true) {
 					const filePath = `.${url.pathname}`
@@ -72,6 +73,12 @@ const server = http.createServer(async (req, res) => {
 
 			await buildApp(`src/${cleanPath}.html`)
 			const htmlFilePath = `.snelle/${cleanPath}.html`
+			// Create necessary directories for the output file
+			const directories = cleanPath.split("/").slice(0, -1)
+			if (directories.length > 0) {
+				const dirPath = `.snelle/${directories.join("/")}`
+				fs.mkdirSync(dirPath, { recursive: true })
+			}
 			const html = fs.readFileSync(htmlFilePath, "utf8")
 			res.writeHead(200, { "Content-Type": "text/html" })
 			res.end(html)

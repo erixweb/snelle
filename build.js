@@ -160,7 +160,13 @@ export async function buildApp(file) {
 export async function buildAll() {
 	const files = readdirSync(path.join(process.cwd(), "src"))
 	if (files) {
-		await Promise.all(files.map((file) => buildApp(`src/${file}`)))
+		await Promise.all(
+			files.map((file) => {
+				if (!file.endsWith(".html")) return
+
+				buildApp(`src/${file}`)
+			})
+		)
 	} else {
 		console.error("No files in src directory")
 	}
