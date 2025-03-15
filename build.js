@@ -144,7 +144,9 @@ export async function buildApp(file) {
 		} else {
 			let outputPath = file.split("/").slice(1).join("/")
 			console.log(outputPath)
-			await writeFile(`.snelle/${outputPath}`, $.html(), "utf8")
+			await fsPromises.mkdir(".snelle", { recursive: true }).then(async () => {
+				await writeFile(`.snelle/${outputPath}`, $.html(), "utf8")
+			})
 		}
 
 		const timeTaken = Date.now() - time
@@ -166,6 +168,9 @@ export async function buildAll() {
 	buildAssets()
 }
 export async function buildAssets() {
+	if (!await fsPromises.exists("public")) {
+		await mkdir("public")
+	}
 	const files = readdirSync(path.join(process.cwd(), "public"))
 	const outputDir = ".snelle/"
 	await mkdir(outputDir, { recursive: true })
