@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync, readdirSync, promises as fsPromises } from "fs"
+import { readFileSync, readdirSync, promises as fsPromises, existsSync } from "fs"
 import * as path from "path"
 import * as cheerio from "cheerio"
 import { chalk } from "./chalk.js"
@@ -168,7 +168,7 @@ export async function buildAll() {
 	buildAssets()
 }
 export async function buildAssets() {
-	if (!await fsPromises.exists("public")) {
+	if (!existsSync("public")) {
 		await mkdir("public")
 	}
 	const files = readdirSync(path.join(process.cwd(), "public"))
