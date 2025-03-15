@@ -55,7 +55,7 @@ switch (command) {
     case 'build':
         try {
             const buildModule = await import('./build.js');
-            await buildModule.buildApp();
+            await buildModule.buildAll();
         } catch (error) {
             console.error('Error:', error.message);
             process.exit(1);

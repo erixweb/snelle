@@ -30,6 +30,8 @@ async function resolveComponent(componentPath) {
 
 // Read the HTML file
 export async function buildApp(file) {
+	if (file === undefined) return
+
 	const time = Date.now()
 	console.log(chalk(`∙∙∙ !8Building !e${file}!8.`))
 	const htmlFilePath = `${file}`
@@ -154,20 +156,26 @@ export async function buildApp(file) {
 
 // Build all files in src directory
 export async function buildAll() {
-	const files = readdirSync("src")
+	const files = readdirSync(path.join(process.cwd(), "src"))
+	if (files) {
+		await Promise.all(files.map((file) => buildApp(`src/${file}`)))
+	} else {
+		console.error("No files in src directory")
+	}
 
-	await Promise.all(files.map((file) => buildApp(`src/${file}`)))
+	buildAssets()
 }
 export async function buildAssets() {
-	const files = readdirSync("public")
+	const files = readdirSync(path.join(process.cwd(), "public"))
 	const outputDir = ".snelle/"
 	await mkdir(outputDir, { recursive: true })
-	await Promise.all(
-		files.map((file) =>
-			writeFile(`${outputDir}/${file}`, readFileSync(`public/${file}`), "utf8")
+	if (files) {
+		await Promise.all(
+			files.map((file) =>
+				writeFile(`${outputDir}/${file}`, readFileSync(`public/${file}`), "utf8")
+			)
 		)
-	)
+	} else {
+		console.error("No files in public directory")
+	}
 }
-
-buildAll()
-buildAssets()
