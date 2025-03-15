@@ -135,9 +135,15 @@ export async function buildApp(file) {
 
 		// Write the modified HTML back to the file
 		const outputDir = path.dirname(`.snelle/${file}`)
-		await mkdir(outputDir, { recursive: true })
-
-		writeFile(`.snelle/${file}`, $.html(), "utf8")
+		// Only create directory if it's not src or public
+		if (!outputDir.includes("src") && !outputDir.includes("public")) {
+			await mkdir(outputDir, { recursive: true })
+			await writeFile(`.snelle/${file}`, $.html(), "utf8")
+		} else {
+			let outputPath = file.split("/").slice(1).join("/")
+			console.log(outputPath)
+			await writeFile(`.snelle/${outputPath}`, $.html(), "utf8")
+		}
 
 		const timeTaken = Date.now() - time
 		console.log(chalk(`!5∎∎∎ !aCompiled !e${file}!a in !9${timeTaken}ms!a.`))
@@ -154,7 +160,7 @@ export async function buildAll() {
 }
 export async function buildAssets() {
 	const files = readdirSync("public")
-	const outputDir = ".snelle/public"
+	const outputDir = ".snelle/"
 	await mkdir(outputDir, { recursive: true })
 	await Promise.all(
 		files.map((file) =>

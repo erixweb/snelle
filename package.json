@@ -2,10 +2,10 @@
 	"name": "snelle",
 	"author": "erixweb",
 	"description": "A simple static site generator",
-	"version": "0.0.12",
+	"version": "0.0.14",
 	"type": "module",
 	"scripts": {
-		"dev": "cli.js",
+		"dev": "snelle dev",
 		"build": "bun run build.js"
 	},
 	"bin": "cli.js",	
@@ -14,7 +14,8 @@
 		"cli.js",
 		"dev.js",
 		"build.js",
-		"create.js"
+		"create.js",
+		"chalk.js"
 	],
 	"devDependencies": {
 		"@types/bun": "latest"

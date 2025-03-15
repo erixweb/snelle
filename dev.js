@@ -12,7 +12,6 @@ const server = http.createServer(async (req, res) => {
 		const filePath = `.${url.pathname}`
 		try {
 			const file = fs.readFileSync(filePath, "utf8")
-			res.writeHead(200, { "Content-Type": "text/html" })
 			res.end(file)
 			return
 		} catch (error) {
@@ -22,13 +21,9 @@ const server = http.createServer(async (req, res) => {
 		}
 	}
 
-	if (url.pathname.endsWith("/")) {
-		console.log(url.pathname)
-	}
-
 	if (url.pathname === "/") {
 		buildApp("src/index.html")
-		const htmlFilePath = `.snelle/src/index.html`
+		const htmlFilePath = `.snelle/index.html`
 		try {
 			const html = fs.readFileSync(htmlFilePath, "utf8")
 			res.writeHead(200, { "Content-Type": "text/html" })
@@ -43,8 +38,40 @@ const server = http.createServer(async (req, res) => {
 		// Trim slashes (/) at the end and start of the pathname
 		try {
 			const cleanPath = url.pathname.replace(/^\/+|\/+$/g, "")
+			if (fs.existsSync(`src/${cleanPath}.html`) === false) {
+				if (fs.existsSync(`public/${cleanPath}`) === true) {
+					const filePath = `.${url.pathname}`
+					try {
+						const file = fs.readFileSync(`public/${cleanPath}`)
+						const extension = cleanPath.split(".").pop().toLowerCase()
+						const mimeTypes = {
+							jpg: "image/jpeg",
+							jpeg: "image/jpeg",
+							png: "image/png",
+							gif: "image/gif",
+							svg: "image/svg+xml",
+							webp: "image/webp",
+						}
+						res.setHeader(
+							"Content-Type",
+							mimeTypes[extension] || "application/octet-stream"
+						)
+						res.end(file)
+						return
+					} catch (error) {
+						res.writeHead(404)
+						res.end("Not Found")
+						return
+					}
+				}
+
+				res.writeHead(404)
+				res.end("Not Found")
+				return
+			}
+
 			await buildApp(`src/${cleanPath}.html`)
-			const htmlFilePath = `.snelle/src/${cleanPath}.html`
+			const htmlFilePath = `.snelle/${cleanPath}.html`
 			const html = fs.readFileSync(htmlFilePath, "utf8")
 			res.writeHead(200, { "Content-Type": "text/html" })
 			res.end(html)
@@ -55,9 +82,6 @@ const server = http.createServer(async (req, res) => {
 			return
 		}
 	}
-
-	res.writeHead(404)
-	res.end("Not Found")
 })
 
 export default function start() {
