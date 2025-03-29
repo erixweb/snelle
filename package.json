@@ -2,7 +2,7 @@
 	"name": "snelle",
 	"author": "erixweb",
 	"description": "A simple static site generator",
-	"version": "0.1",
+	"version": "0.1.1",
 	"type": "module",
 	"scripts": {
 		"dev": "snelle dev",

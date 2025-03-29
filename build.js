@@ -137,6 +137,7 @@ export async function buildApp(file) {
 
 		// Write the modified HTML back to the file
 		const outputDir = path.dirname(`.snelle/${file}`)
+		
 		// Only create directory if it's not src or public
 		if (!outputDir.includes("src") && !outputDir.includes("public")) {
 			await mkdir(outputDir, { recursive: true })
@@ -144,6 +145,18 @@ export async function buildApp(file) {
 		} else {
 			let outputPath = file.split("/").slice(1).join("/")
 			console.log(outputPath)
+			// If the file name is test.html then it should create a folder called test that contains an index.html with the content of the file. This must only happen if the original file isn't already an index.html file.
+			// Also it should consider where if it is a folder. If it is, it shouldn't create a folder with the same name.
+			if (
+				outputPath.endsWith(".html") &&
+				!outputPath.includes("index.html") &&
+				!outputPath.includes("/")
+			) {
+				outputPath = outputPath.split(".")[0]
+				await mkdir(`.snelle/${outputPath}`, { recursive: true })
+				outputPath = `${outputPath}/index.html`
+			}
+
 			await fsPromises.mkdir(".snelle", { recursive: true }).then(async () => {
 				await writeFile(`.snelle/${outputPath}`, $.html(), "utf8")
 			})
@@ -158,18 +171,55 @@ export async function buildApp(file) {
 
 // Build all files in src directory
 export async function buildAll() {
-	const files = readdirSync(path.join(process.cwd(), "src"))
-	if (files) {
-		await Promise.all(
-			files.map((file) => {
-				if (!file.endsWith(".html")) return
+	async function getAllFiles(dirPath) {
+		const files = readdirSync(dirPath)
+		let arrayOfFiles = []
 
-				buildApp(`src/${file}`)
-			})
-		)
-	} else {
-		console.error("No files in src directory")
+		for (const file of files) {
+			const fullPath = path.join(dirPath, file)
+			if (existsSync(fullPath)) {
+				const stats = await fsPromises.stat(fullPath)
+				if (stats.isDirectory()) {
+					arrayOfFiles = arrayOfFiles.concat(await getAllFiles(fullPath))
+				} else if (file.endsWith(".html")) {
+					// Store relative path from src directory
+					const relativePath = path.relative(path.join(process.cwd(), "src"), fullPath)
+					arrayOfFiles.push(relativePath)
+				}
+			}
+		}
+
+		return arrayOfFiles
 	}
+
+	try {
+		// Create .snelle directory if it doesn't exist
+		if (!existsSync(".snelle")) {
+			await mkdir(".snelle", { recursive: true })
+		}
+
+		const srcPath = path.join(process.cwd(), "src")
+		if (!existsSync(srcPath)) {
+			console.error("src directory does not exist")
+			return
+		}
+
+		const files = await getAllFiles(srcPath)
+
+		if (files && files.length > 0) {
+			// Process files sequentially to avoid file system conflicts
+			for (const file of files) {
+				// Construct the proper file path for processing
+				const fullPath = path.join(process.cwd(), "src", file)
+				console.log(file)
+				await buildApp(`src/${file}`)
+			}
+		} else {
+			console.error("No HTML files found in src directory")
+		}
+	} catch (error) {
+		console.error("Error processing files:", error)
+	}	
 
 	buildAssets()
 }
@@ -179,7 +229,9 @@ export async function buildAssets() {
 	}
 	const files = readdirSync(path.join(process.cwd(), "public"))
 	const outputDir = ".snelle/"
-	await mkdir(outputDir, { recursive: true })
+	if (!existsSync(outputDir)) {
+		await mkdir(outputDir, { recursive: true })
+	}
 	if (files) {
 		await Promise.all(
 			files.map((file) =>
